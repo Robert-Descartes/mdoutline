@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mdoutline"
-version = "0.1.0"
-description = "Markdown chapters to a print-quality PDF with cover, TOC, page headers/footers and exact outline bookmarks"
+version = "0.2.0"
+description = "Markdown (single file or chapter folders) to a print-quality PDF with cover, TOC, page headers/footers and exact outline bookmarks"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"

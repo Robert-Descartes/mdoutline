@@ -65,8 +65,12 @@ class _IdGen:
 
 
 def render_chapters(src: Path):
-    """[(h1_title, h1_id, [(h2_title, h2_id)], body_html)] in filename order."""
-    files = sorted(src.glob("*.md"))
+    """[(h1_title, h1_id, [(h2_title, h2_id)], body_html)] in filename order.
+
+    src is a directory of *.md chapters or a single markdown file; in the
+    latter case every h1 in the file acts as one chapter.
+    """
+    files = [src] if src.is_file() else sorted(src.glob("*.md"))
     if not files:
         raise SystemExit(f"no .md chapters found in {src}")
     ids = _IdGen()

@@ -4,11 +4,11 @@
 
 **Markdown chapters → one print-quality PDF with exact outline bookmarks.**
 
-Point it at a folder of `*.md` chapter files. It stitches them into a styled
-HTML document (cover, clickable table of contents, page headers/footers),
-prints it to PDF with a Chromium engine, and writes the PDF outline so every
-heading shows up in the bookmarks panel of your PDF viewer — at the right
-page, by construction.
+Point it at a markdown file, or a folder of `*.md` chapter files. It stitches
+them into a styled HTML document (cover, clickable table of contents, page
+headers/footers), prints it to PDF with a Chromium engine, and writes the PDF
+outline so every heading shows up in the bookmarks panel of your PDF viewer —
+at the right page, by construction.
 
 ## Why this exists
 
@@ -48,11 +48,17 @@ export MDOUTLINE_BROWSER="/path/to/chrome"
 ## Quickstart
 
 ```bash
-mdoutline make examples/demo -o demo.pdf
+mdoutline notes.md                     # one markdown file
+mdoutline examples/demo -o demo.pdf    # a directory of chapter files
 ```
 
-A "book" is a directory of chapters ordered by filename, plus an optional
-`book.toml`:
+That single command runs all three stages atomically — re-rendering can
+never leave you with a bookmark-less PDF. SRC is either:
+
+- **a single markdown file**: every `#` heading acts as one chapter, every
+  `##` as a subsection; both levels get bookmarks;
+- **a "book"**: a directory of `*.md` chapters ordered by filename, plus an
+  optional `book.toml`:
 
 ```
 mybook/
@@ -63,9 +69,9 @@ mybook/
     03-results.md
 ```
 
-Run `mdoutline make mybook/chapters -o mybook.pdf` (or from `mybook/`, simply
-`mdoutline make chapters`). One command runs all three stages atomically:
-re-rendering can never leave you with a bookmark-less PDF.
+  Run `mdoutline mybook/chapters -o mybook.pdf` (or from `mybook/`, simply
+  `mdoutline chapters`). A `book.toml` placed next to a single file is
+  honoured too.
 
 ## Configuration (book.toml)
 
@@ -92,11 +98,12 @@ All keys live under `[book]`; every one is optional.
 ## Commands
 
 ```
-mdoutline make SRC [-o OUT.pdf] [--config book.toml] [--keep-html]
-    build + render + bookmarks in one atomic run
+mdoutline SRC [-o OUT.pdf] [--config book.toml] [--keep-html]
+    the default command: build + render + bookmarks in one atomic run;
+    SRC is a markdown file, a chapters directory or a book directory
 
 mdoutline build SRC [-o OUT.html] [--config book.toml]
-    chapters -> styled HTML (cover, TOC, section ids)
+    markdown -> styled HTML (cover, TOC, section ids)
 
 mdoutline render IN.html [-o OUT.pdf] [--config book.toml]
     HTML -> PDF (no bookmarks written)

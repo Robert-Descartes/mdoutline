@@ -64,11 +64,36 @@ def check_e2e(tmp: Path) -> None:
     print(f"PASS e2e: {pages} pages, {len(toc)} bookmarks, all landing exactly")
 
 
+def check_single_file(tmp: Path) -> None:
+    """Bare invocation (no subcommand) on one file with multi-level headings."""
+    pdf = tmp / "cjk.pdf"
+    rc = main([str(DEMO / "chapters" / "03-cjk.md"), "-o", str(pdf)])
+    assert rc == 0, "bare mdoutline <file.md> exited nonzero"
+    assert pdf.is_file() and pdf.stat().st_size > 10_000, "single-file pdf missing or tiny"
+
+    doc = pymupdf.open(pdf)
+    try:
+        toc = doc.get_toc()
+        assert len(toc) >= 4, f"expected >=4 bookmarks for the single file, got {len(toc)}"
+        missed = []
+        for lvl, title, page in toc:
+            text = _norm(doc[page - 1].get_text())
+            probe = _norm(title)
+            probe = probe[-8:] if len(probe) > 8 else probe
+            if probe not in text:
+                missed.append((title, page))
+        assert not missed, f"single-file bookmarks not landing: {missed}"
+    finally:
+        doc.close()
+    print("PASS single-file bare invocation")
+
+
 def main_test() -> None:
     with tempfile.TemporaryDirectory(prefix="mdoutline-test-") as td:
         tmp = Path(td)
         check_duplicate_ids(tmp)
         check_e2e(tmp)
+        check_single_file(tmp)
     print("ALL TESTS PASSED")
 
 

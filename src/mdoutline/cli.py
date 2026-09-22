@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""mdoutline command line: build/render/bookmarks, plus atomic `make`."""
+"""mdoutline command line: bare `mdoutline SRC` runs make; build/render/bookmarks stay as stages."""
 from __future__ import annotations
 
 import argparse
@@ -21,12 +21,27 @@ def _resolve_src(src: Path) -> Path:
     return src
 
 
+def _prepare(src_arg: str) -> tuple[Path, Path, Path]:
+    """Resolve SRC into (chapters, book_dir, default_out).
+
+    SRC is a single markdown file, a chapters directory, or a book
+    directory containing chapters/. default_out's stem is also the config
+    title fallback: file stem for a file, dir name for a directory.
+    """
+    arg = Path(src_arg).resolve()
+    if arg.is_file():
+        if arg.suffix.lower() != ".md":
+            raise SystemExit(f"mdoutline: not a markdown file: {arg}")
+        return arg, arg.parent, arg.with_suffix(".pdf")
+    chapters = _resolve_src(arg)
+    return chapters, arg, arg / f"{arg.name}.pdf"
+
+
 def _cmd_make(args) -> int:
-    book_dir = Path(args.src).resolve()
-    src = _resolve_src(book_dir)
-    cfg = fill_defaults(load_config(book_dir if book_dir != src else src,
-                                    args.config and Path(args.config)), book_dir)
-    pdf = Path(args.out).resolve() if args.out else book_dir / f"{book_dir.name}.pdf"
+    src, book_dir, default_out = _prepare(args.src)
+    cfg = fill_defaults(load_config(book_dir, args.config and Path(args.config)),
+                        default_out.with_suffix(""))
+    pdf = Path(args.out).resolve() if args.out else default_out
     pdf.parent.mkdir(parents=True, exist_ok=True)
 
     if args.keep_html:
@@ -47,11 +62,10 @@ def _cmd_make(args) -> int:
 
 
 def _cmd_build(args) -> int:
-    book_dir = Path(args.src).resolve()
-    src = _resolve_src(book_dir)
-    cfg = fill_defaults(load_config(book_dir if book_dir != src else src,
-                                    args.config and Path(args.config)), book_dir)
-    out = Path(args.out).resolve() if args.out else book_dir / f"{book_dir.name}.html"
+    src, book_dir, default_out = _prepare(args.src)
+    cfg = fill_defaults(load_config(book_dir, args.config and Path(args.config)),
+                        default_out.with_suffix(""))
+    out = Path(args.out).resolve() if args.out else default_out.with_suffix(".html")
     build_html(src, out, cfg)
     print(f"mdoutline: html written -> {out}")
     return 0
@@ -80,16 +94,27 @@ def _cmd_bookmarks(args) -> int:
     return 0
 
 
+_SUBCOMMANDS = ("make", "build", "render", "bookmarks")
+
+
 def main(argv=None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+    argv = list(argv)
+    if not argv:
+        argv = ["--help"]
+    elif argv[0] not in _SUBCOMMANDS and not argv[0].startswith("-"):
+        argv.insert(0, "make")
     ap = argparse.ArgumentParser(
         prog="mdoutline",
-        description="Markdown chapters -> one PDF with cover, TOC and exact outline bookmarks.",
+        description="Markdown file or chapter directory -> one PDF with cover, "
+                    "TOC and exact outline bookmarks.",
     )
     ap.add_argument("--version", action="version", version=f"mdoutline {__version__}")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    p = sub.add_parser("make", help="build + render + bookmarks in one atomic run")
-    p.add_argument("src", help="directory containing *.md chapters (and optional book.toml)")
+    p = sub.add_parser("make", help="build + render + bookmarks in one atomic run (default)")
+    p.add_argument("src", help="markdown file, or directory of *.md chapters (book.toml optional)")
     p.add_argument("-o", "--out", help="output pdf path (default: <src-name>.pdf next to src)")
     p.add_argument("--config", help="path to book.toml (default: <src>/book.toml)")
     p.add_argument("--keep-html", action="store_true",

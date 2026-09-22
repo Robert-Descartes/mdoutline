@@ -4,7 +4,7 @@
 
 **Markdown 章节文件 → 一份带精确大纲书签的可印刷 PDF。**
 
-给它一个装着 `*.md` 章节文件的目录：它把章节拼成一份带样式的 HTML（封面、可点击目录、页眉页脚），用 Chromium 引擎打印成 PDF，并写入 PDF 大纲——每个标题都会出现在 PDF 阅读器的书签面板里，且**按构造保证落在正确的页上**。
+给它一个 Markdown 文件，或一个装着 `*.md` 章节文件的目录：它把内容拼成一份带样式的 HTML（封面、可点击目录、页眉页脚），用 Chromium 引擎打印成 PDF，并写入 PDF 大纲——每个标题都会出现在 PDF 阅读器的书签面板里，且**按构造保证落在正确的页上**。
 
 ## 为什么需要它
 
@@ -34,10 +34,16 @@ export MDOUTLINE_BROWSER="/path/to/chrome"
 ## 快速上手
 
 ```bash
-mdoutline make examples/demo -o demo.pdf
+mdoutline notes.md                     # 单个 Markdown 文件
+mdoutline examples/demo -o demo.pdf    # 装着章节文件的目录
 ```
 
-一本"书"就是一个按文件名排序的章节目录，外加可选的 `book.toml`：
+这一条命令原子地跑完三个阶段——重新渲染不可能留下一份丢书签的 PDF。SRC
+可以是：
+
+- **单个 Markdown 文件**：文中每个 `#` 标题充当一章、每个 `##` 充当小节，
+  两级都进书签；
+- **一本"书"**：一个按文件名排序的章节目录，外加可选的 `book.toml`：
 
 ```
 mybook/
@@ -48,9 +54,8 @@ mybook/
     03-结果.md
 ```
 
-运行 `mdoutline make mybook/chapters -o mybook.pdf`（或在 `mybook/` 下直接
-`mdoutline make chapters`）。一条命令原子地跑完三个阶段：重新渲染不可能
-留下一份丢书签的 PDF。
+  运行 `mdoutline mybook/chapters -o mybook.pdf`（或在 `mybook/` 下直接
+  `mdoutline chapters`）；在单个文件旁边放一份 `book.toml` 同样生效。
 
 ## 配置（book.toml）
 
@@ -77,11 +82,12 @@ mybook/
 ## 命令
 
 ```
-mdoutline make SRC [-o OUT.pdf] [--config book.toml] [--keep-html]
-    拼接 + 打印 + 书签，一次原子完成
+mdoutline SRC [-o OUT.pdf] [--config book.toml] [--keep-html]
+    默认命令：拼接 + 打印 + 书签，一次原子完成；
+    SRC 为 Markdown 文件、章节目录或书目录
 
 mdoutline build SRC [-o OUT.html] [--config book.toml]
-    章节 → 带样式 HTML（封面、目录、节锚点）
+    Markdown → 带样式 HTML（封面、目录、节锚点）
 
 mdoutline render IN.html [-o OUT.pdf] [--config book.toml]
     HTML → PDF（不写书签）
