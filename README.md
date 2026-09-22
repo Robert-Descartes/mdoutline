@@ -1,5 +1,7 @@
 # mdoutline
 
+**English** | [简体中文](README.zh-CN.md)
+
 **Markdown chapters → one print-quality PDF with exact outline bookmarks.**
 
 Point it at a folder of `*.md` chapter files. It stitches them into a styled
@@ -30,9 +32,12 @@ Latin documents.
 Requires Python 3.10+.
 
 ```bash
-pip install mdoutline            # from source: pip install -e .
+pip install .                    # from a checkout of this repository
 playwright install chromium      # one-time browser download (~170 MB)
 ```
+
+mdoutline is not yet on PyPI; `pip install mdoutline` will work the
+same way once it is published.
 
 To use an existing Chrome/Chromium/Edge instead of the bundled browser:
 

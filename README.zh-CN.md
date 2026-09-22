@@ -1,5 +1,7 @@
 # mdoutline
 
+[English](README.md) | **简体中文**
+
 **Markdown 章节文件 → 一份带精确大纲书签的可印刷 PDF。**
 
 给它一个装着 `*.md` 章节文件的目录：它把章节拼成一份带样式的 HTML（封面、可点击目录、页眉页脚），用 Chromium 引擎打印成 PDF，并写入 PDF 大纲——每个标题都会出现在 PDF 阅读器的书签面板里，且**按构造保证落在正确的页上**。
@@ -17,9 +19,11 @@ mdoutline 走了另一条路：渲染出的目录由内部超链接组成，Chro
 需要 Python 3.10+。
 
 ```bash
-pip install mdoutline            # 从源码安装：pip install -e .
+pip install .                    # 从本仓库检出版本安装
 playwright install chromium      # 一次性浏览器下载（约 170 MB）
 ```
+
+mdoutline 尚未发布到 PyPI；发布之后 `pip install mdoutline` 即可直接使用。
 
 想用本机已有的 Chrome/Chromium/Edge 而不是内置浏览器：
 
@@ -50,11 +54,25 @@ mybook/
 
 ## 配置（book.toml）
 
-所有键放在 `[book]` 下，全部可选。各键含义与默认值见 [README.md](README.md)
-的 Configuration 一节（键名与英文版完全一致）：标题/副标题/作者/日期/摘要、
-`lang`、`cover`、`toc_title`、页眉页脚模板（支持 `{title}` `{subtitle}`
-`{page}` `{pages}` 占位符）、`page_format`、四边页距（mm）、`css` 追加样式、
-`browser_path`、`settle_ms` 等待时间。
+所有键放在 `[book]` 下，全部可选：
+
+| 键 | 默认值 | 含义 |
+|---|---|---|
+| `title` | 目录名 | 封面标题、页眉标题 |
+| `subtitle` | — | 封面副标题，页眉右侧 |
+| `authors` | — | 封面信息表 |
+| `date` | 今天 | 封面信息表 |
+| `summary` | — | 封面摘要段 |
+| `lang` | `"zh-CN"` | 文档的 `<html lang>` |
+| `cover` | `true` | 是否渲染封面页 |
+| `toc_title` | `"Contents"` | 目录页标题 |
+| `header_left` / `header_right` | `"{title}"` / `"{subtitle}"` | 页眉左右栏；支持 `{title}`、`{subtitle}` 占位符 |
+| `footer_format` | `"{page} / {pages}"` | 页脚；支持 `{page}`、`{pages}` 占位符 |
+| `page_format` | `"A4"` | 任意 Chromium 页面格式（`A4`、`Letter`…） |
+| `margin_top_mm` … `margin_right_mm` | 18/16/16/16 | 四边页距（mm） |
+| `css` | — | 追加在主题之后的额外 CSS 文件 |
+| `browser_path` | — | Chromium 可执行文件（环境变量 `MDOUTLINE_BROWSER` 优先） |
+| `settle_ms` | `500` | 字体加载后的等待毫秒数；分页不稳定时调大 |
 
 ## 命令
 
