@@ -1,0 +1,89 @@
+/* mdoutline default theme: print-oriented, CJK-friendly.
+   Accent palette is defined once here; override anything with user css. */
+:root {
+  --accent: #1a5276;
+  --accent-soft: #eaf2f8;
+  --accent-mid: #21618c;
+  --ink: #1c2833;
+  --ink-soft: #34495e;
+  --ink-faint: #7f8c8d;
+  --line: #aeb6bf;
+  --serif: "Source Han Serif SC", "Noto Serif CJK SC", "SimSun", "Songti SC", Georgia, serif;
+  --sans: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Segoe UI", Arial, sans-serif;
+  --mono: Consolas, "Courier New", monospace;
+}
+
+@page { size: A4; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #ffffff; }
+body {
+  font-family: var(--serif);
+  font-size: 10.5pt; line-height: 1.62; color: var(--ink);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+/* ---------- cover ---------- */
+.cover { page-break-after: always; height: 252mm; display: flex; flex-direction: column; }
+.cover-band { background: var(--accent); color: #ffffff; padding: 14mm 12mm 11mm; }
+.cover-band h1 { font-family: var(--sans); font-size: 30pt; line-height: 1.25;
+                 margin: 6mm 0 3mm; border: none; color: #fff; padding: 0; }
+.cover-band .sub { font-family: var(--sans); font-size: 12pt; opacity: .92; }
+.cover-meta { padding: 10mm 12mm 0; }
+.cover-meta table { font-family: var(--sans); font-size: 10pt; color: var(--ink-soft); border: none; }
+.cover-meta td { border: none; padding: 1.6mm 4mm 1.6mm 0; }
+.cover-summary { margin: 10mm 12mm; padding: 6mm 8mm; background: var(--accent-soft);
+  border-left: 3mm solid var(--accent);
+  font-family: var(--sans); font-size: 10pt; line-height: 1.8; color: #2c3e50; }
+.cover-foot { margin-top: auto; padding: 0 12mm 8mm; font-family: var(--sans);
+  font-size: 9pt; color: var(--ink-faint); }
+
+/* ---------- toc ---------- */
+#toc { page-break-after: always; }
+.toc-title { font-family: var(--sans); font-size: 20pt; color: var(--accent);
+  border-bottom: 2px solid var(--accent); padding-bottom: 3mm; }
+ol.toc-chapters { list-style: none; padding: 0; margin: 6mm 0 0; }
+ol.toc-chapters > li { margin-bottom: 3.2mm; }
+ol.toc-chapters > li > a { font-family: var(--sans); font-size: 11.5pt; font-weight: 700;
+  color: var(--accent); text-decoration: none; }
+ul.toc-sub { list-style: none; padding: 0 0 0 8mm; margin: 1.5mm 0 0;
+  column-count: 2; column-gap: 8mm; }
+ul.toc-sub li { margin: 0.6mm 0; break-inside: avoid; }
+ul.toc-sub a { font-family: var(--sans); font-size: 9pt; color: var(--ink-soft); text-decoration: none; }
+#toc a:hover { text-decoration: underline; }
+
+/* ---------- headings ---------- */
+.chapter { page-break-before: always; }
+h1 { font-family: var(--sans); font-size: 17pt; color: var(--accent);
+     border-bottom: 2px solid var(--accent); padding-bottom: 2.5mm; margin: 0 0 6mm;
+     break-after: avoid; }
+h2 { font-family: var(--sans); font-size: 13pt; color: var(--accent);
+     margin: 7mm 0 3mm; break-after: avoid; }
+h3 { font-family: var(--sans); font-size: 11pt; color: var(--accent-mid);
+     margin: 5mm 0 2mm; break-after: avoid; }
+p { margin: 2mm 0; text-align: justify; }
+p:has(+ table), p:has(+ ul), p:has(+ ol) { break-after: avoid; }
+strong { font-family: var(--sans); font-weight: 700; }
+
+/* ---------- tables ---------- */
+table { border-collapse: collapse; width: 100%; margin: 3mm 0 4mm;
+        font-size: 9pt; line-height: 1.5; }
+thead { display: table-header-group; }
+th { background: var(--accent-soft); color: var(--accent); font-family: var(--sans);
+     font-weight: 700; border: 0.6px solid var(--line); padding: 1.6mm 2mm; text-align: left; }
+td { border: 0.6px solid var(--line); padding: 1.6mm 2mm; vertical-align: top; }
+td:first-child, th:first-child { white-space: normal; min-width: 22mm; }
+del { text-decoration: line-through; color: #95a5a6; }
+tr { break-inside: avoid; }
+
+/* ---------- code ---------- */
+code { font-family: var(--mono); font-size: 9pt; background: #f4f6f7;
+       padding: 0.3mm 1.2mm; border-radius: 2px; }
+pre { background: #f4f6f7; border: 0.6px solid #d5dbdb; border-left: 3px solid var(--accent);
+      padding: 2.5mm 3.5mm; white-space: pre-wrap; word-break: break-all;
+      margin: 2.5mm 0 3.5mm; break-inside: avoid; }
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.55; }
+
+/* ---------- lists & links ---------- */
+ul, ol { margin: 2mm 0 2.5mm; padding-left: 7mm; }
+li { margin: 1mm 0; }
+a { color: var(--accent); }

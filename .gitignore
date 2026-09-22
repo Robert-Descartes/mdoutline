@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+dist/
+build/
+*.egg-info/
+.venv/
+.pytest_cache/
+# transient files from the bookmark writer and in-tree demo builds
+*.tmp.pdf
+/examples/demo/demo.pdf

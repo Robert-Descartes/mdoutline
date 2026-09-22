@@ -1,0 +1,11 @@
+[book]
+title = "The mdoutline Demo Book"
+subtitle = "Markdown chapters to a bookmarked PDF"
+authors = "mdoutline contributors"
+date = "2026-09-22"
+summary = "Four short chapters exercising headings, tables, code blocks, cross-links, deletion marks and CJK typesetting. Build me with: mdoutline make examples/demo"
+lang = "en"
+toc_title = "Contents"
+header_left = "{title}"
+header_right = "demo"
+footer_format = "page {page} of {pages}"
